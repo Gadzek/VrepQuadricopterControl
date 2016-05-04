@@ -1,5 +1,9 @@
-/SimpleThreads.class
 /SimpleThreads$MessageLoop.class
-/vrep/
-/CommandSender.class
+/SimpleThreads.class
+/complexCommandTest.class
+/coppelia/
+/droneMoveTest.class
+/simpleSynchronousTest.class
+/simpleTest.class
 /test/
+/vrep/

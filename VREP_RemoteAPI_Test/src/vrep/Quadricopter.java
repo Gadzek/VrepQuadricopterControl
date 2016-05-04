@@ -1,6 +1,7 @@
 package vrep;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import coppelia.FloatW;
 import coppelia.FloatWA;
@@ -9,7 +10,7 @@ import coppelia.Point3;
 import coppelia.remoteApi;
 
 
-public class Quadricopter
+public class Quadricopter implements Runnable
 {
 	//TODO: Add LoadModel method (here?)
 	
@@ -25,13 +26,22 @@ public class Quadricopter
 	private Point3 positionOfTarget;
 	
 	public static ArrayList<Integer> loadedQuadricopters;
+	public LinkedList<FloatWA> path;
 	
-	public Quadricopter(int cid, remoteApi api)
+	@Override
+	public void run()
+	{
+		while (!path.isEmpty()){
+			while(vrep.simxSetObjectPosition(clientID, targetHandle, -1, path.removeFirst(), remoteApi.simx_opmode_oneshot_wait) != remoteApi.simx_return_ok){}
+		}
+	}
+	
+	protected Quadricopter(int cid, remoteApi api)
 	{
 		this(cid, api, "Quadricopter");
 	}
 	
-	public Quadricopter(int cid, remoteApi api, String quadName)
+	protected Quadricopter(int cid, remoteApi api, String quadName)
 	{
 		this.clientID = cid;
 		this.vrep = api;
@@ -39,6 +49,7 @@ public class Quadricopter
 		//TODO: Make Quadricopter search and loadedQuadricopters list in Vrep class rather than Quadricopter
 		if (loadedQuadricopters == null)
 			loadedQuadricopters = new ArrayList<>();
+		path = new LinkedList<>();
 		
 		String quadNum = "";
 		if(quadName.contains("#"))
@@ -119,13 +130,10 @@ public class Quadricopter
 		{
 			Point3 p = position.lerp(target, i);
 			FloatWA next = new FloatWA(p.toFloatArray());
-			cmdSender.path.add(next);
+			//path.add(next);
 			//System.out.println(p);
-		    //while(vrep.simxSetObjectPosition(clientID, targetHandle, -1, next, remoteApi.simx_opmode_oneshot_wait) != remoteApi.simx_return_ok){}
+		    while(vrep.simxSetObjectPosition(clientID, targetHandle, -1, next, remoteApi.simx_opmode_oneshot_wait) != remoteApi.simx_return_ok){}
 		}
-		//cmdSender.run();
-		Thread t = new Thread(cmdSender);
-		t.start();
 		
 		//position = getObjectPosition(droneHandle);
 		//positionOfTarget = getObjectPosition(targetHandle);
@@ -155,5 +163,26 @@ public class Quadricopter
 		{
 			moveTo(position);
 		}
+	}
+	
+	public void addCmd(Point3 target, float velocity)
+	{
+		float distance = position.distance(target);
+		
+		FloatW dt = new FloatW(0);
+		vrep.simxGetFloatingParameter(clientID, remoteApi.sim_floatparam_simulation_time_step, dt, remoteApi.simx_opmode_oneshot_wait);
+		float ds = velocity*dt.getValue();
+		
+		for(float i=0f; i<distance; i+=ds)
+		{
+			Point3 p = position.lerp(target, i);
+			FloatWA next = new FloatWA(p.toFloatArray());
+			path.add(next);
+		}
+	}
+	
+	public void addCmd(float x, float y, float z, float velocity)
+	{
+		addCmd(new Point3(x,y,z), velocity);
 	}
 }
