@@ -20,7 +20,7 @@ public class droneMoveTest {
 		 //quad1.moveTo(0f, 1f, 0.5f, 1f);
 		 //quad2.moveTo(-2f, -1f, 1f, 0.5f);
 		 quad1.addCmd(0f, 1f, 0.5f, 1f);
-		 quad2.addCmd(-2f, -1f, 1f, 0.5f);
+		 quad2.addCmd(-2f, -1f, 1f, 0.1f);
 		 t1.start();
 		 t2.start();
 		 

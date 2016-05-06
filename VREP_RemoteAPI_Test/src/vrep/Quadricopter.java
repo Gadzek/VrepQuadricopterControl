@@ -20,7 +20,6 @@ public class Quadricopter implements Runnable
 	private	int targetHandle;
 	private	int clientID;
 	private	remoteApi vrep;
-	private CommandSender cmdSender;
 	
 	private Point3 position;
 	private Point3 positionOfTarget;
@@ -31,9 +30,7 @@ public class Quadricopter implements Runnable
 	@Override
 	public void run()
 	{
-		while (!path.isEmpty()){
-			while(vrep.simxSetObjectPosition(clientID, targetHandle, -1, path.removeFirst(), remoteApi.simx_opmode_oneshot_wait) != remoteApi.simx_return_ok){}
-		}
+		executeCommands();
 	}
 	
 	protected Quadricopter(int cid, remoteApi api)
@@ -64,8 +61,6 @@ public class Quadricopter implements Runnable
 		targetHandle = targetH.getValue();
 		vrep.simxGetObjectHandle(clientID, quadName+"_base"+quadNum, targetH, remoteApi.simx_opmode_oneshot_wait);
 		droneHandle = targetH.getValue();
-		
-		cmdSender = new CommandSender(cid, api, targetHandle);
 		
 		if (!loadedQuadricopters.contains(droneHandle))
 			loadedQuadricopters.add(droneHandle);
@@ -116,7 +111,7 @@ public class Quadricopter implements Runnable
         return new Point3(pos.getArray());
 	}
 	
-	public void moveTo(Point3 target, float velocity)
+	public void moveTo(Point3 target, float velocity) //TODO: Make sure object is not already moving
 	{
 		//FloatWA t = new FloatWA(new float[]{1f, 1f, 1f});
 		//while(vrep.simxSetObjectPosition(clientID, targetHandle, -1, t, remoteApi.simx_opmode_oneshot_wait) != remoteApi.simx_return_ok){}
@@ -131,10 +126,10 @@ public class Quadricopter implements Runnable
 			Point3 p = position.lerp(target, i);
 			FloatWA next = new FloatWA(p.toFloatArray());
 			//path.add(next);
+			//path.add(next);
 			//System.out.println(p);
 		    while(vrep.simxSetObjectPosition(clientID, targetHandle, -1, next, remoteApi.simx_opmode_oneshot_wait) != remoteApi.simx_return_ok){}
 		}
-		
 		//position = getObjectPosition(droneHandle);
 		//positionOfTarget = getObjectPosition(targetHandle);
 	}
@@ -184,5 +179,13 @@ public class Quadricopter implements Runnable
 	public void addCmd(float x, float y, float z, float velocity)
 	{
 		addCmd(new Point3(x,y,z), velocity);
+	}
+	
+	public void executeCommands()
+	{
+		while (!path.isEmpty())
+		{
+			while(vrep.simxSetObjectPosition(clientID, targetHandle, -1, path.removeFirst(), remoteApi.simx_opmode_oneshot_wait) != remoteApi.simx_return_ok){}
+		}
 	}
 }

@@ -31,19 +31,6 @@ public class Vrep {
 	      }
 	}
 	
-	public int loadScene()
-	{
-		//int out = api.simxLoadScene(clientID, "H:\\Praca magisterska\\V-REP\\scenes\\QuadTrial.ttt", 1, remoteApi.simx_opmode_oneshot_wait);
-		//int out;
-		while (api.simxLoadScene(clientID, "H:\\Praca magisterska\\V-REP\\scenes\\QuadTrial.ttt", 1, remoteApi.simx_opmode_oneshot_wait) != remoteApi.simx_return_ok)
-		{
-			
-		}
-		//System.out.println(out);
-		scene = true;
-		return 0;
-	}
-	
 	public Quadricopter getQuadricopter(String name)
 	{
 		return new Quadricopter(clientID, api, name);
