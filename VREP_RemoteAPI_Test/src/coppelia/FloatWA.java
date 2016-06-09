@@ -2,6 +2,8 @@
 
 package coppelia;
 
+import helper.Point3;
+
 public class FloatWA
 {
     float[] w;

@@ -1,7 +1,7 @@
 package test;
 import java.util.Arrays;
 
-import coppelia.Point3;
+import helper.Point3;
 
 public class Point3Test 
 {
