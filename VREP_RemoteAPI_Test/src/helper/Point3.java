@@ -9,6 +9,8 @@ public class Point3 {
 	private float y;
 	private float z;
 	
+	public static final Point3 ZERO_POINT = new Point3(0,0,0);
+	
 	//float velocity?
 	
 	public Point3(float x, float y, float z)
@@ -69,6 +71,27 @@ public class Point3 {
 		return (float)Math.sqrt(distanceSquared(p));
 	}
 	
+	public boolean equals(Point3 p)
+	{
+		return this.equals(p, 0.00001);
+	}
+	
+	public boolean equals(Point3 p, double epsilon)
+	{
+		if (epsilon < 0)
+			epsilon = -1*epsilon;
+		
+		Point3 r = this.sub(p);
+		if (
+				(-epsilon <= r.x && r.x <= epsilon) &&
+				(-epsilon <= r.y && r.y <= epsilon) &&
+				(-epsilon <= r.z && r.z <= epsilon)
+			)
+			return true;
+		else
+			return false;		
+	}
+	
 	public Point3 add(Point3 p)
 	{
 		return new Point3(x+p.x, y+p.y, z+p.z);
@@ -82,6 +105,43 @@ public class Point3 {
 	public Point3 mul(float f)
 	{
 		return new Point3(f*x, f*y, f*z);
+	}
+	
+	public Point3 mul(double f)
+	{
+		return new Point3(f*x, f*y, f*z);
+	}
+	
+	public Point3 cross(Point3 p1, Point3 p2)
+	{
+		Point3 c = new Point3();
+		Point3 vec1 = p1.sub(this);
+		Point3 vec2 = p2.sub(this);
+		
+		c.x = vec1.y*vec2.z - vec1.z*vec2.y;
+		c.y = vec1.z*vec2.x - vec1.x*vec2.z;
+		c.z = vec1.x*vec2.y - vec1.y*vec2.x;
+
+		return this.add(c);
+	}
+	
+	public Point3 dot(Point3 p1, Point3 p2)
+	{
+		return this.add(p1.sub(this)).add(p2.sub(this));
+	}
+	
+	public Point3 bisect(Point3 p1, Point3 p2)
+	{
+		return bisect(p1, p2, 1);
+	}
+	
+	public Point3 bisect(Point3 p1, Point3 p2, float length)
+	{
+		Point3 a = this.add(p1.sub(this).mul(this.distance(p2)));
+		Point3 b = this.add(p2.sub(this).mul(this.distance(p1)));
+		Point3 r = this.dot(a, b);
+		r = this.add(r.sub(this).mul(length));
+		return r;
 	}
 	
 	public Point3 lerp(Point3 target, float mu)

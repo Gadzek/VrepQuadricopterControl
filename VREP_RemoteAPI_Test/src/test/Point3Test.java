@@ -11,6 +11,7 @@ public class Point3Test
 		OperationsTest();
 		distanceTest();
 		lerpTest();
+		vectorOperationsTest();
 		//System.out.println(1f - 0.6f);
 	}
 	
@@ -112,5 +113,25 @@ public class Point3Test
 		Point3 c = a.lerp(b, step);
 		assert Arrays.equals(c.toFloatArray(), new float[]{1f+(0.5f-1f)*step, 1f+(0.5f-1f)*step, 1f+(0.5f-1f)*step});
 		System.out.println(c);
+	}
+	
+	public static void vectorOperationsTest()
+	{
+		System.out.println("\nVector Ops: ");
+		
+		Point3 a = new Point3(0f, 0f, 1f);
+		Point3 b = new Point3(-1f, 0f, 1f);
+		Point3 c = new Point3(1f, 2f, 1f);
+		Point3 d = a.bisect(b, c);
+		//d = a.add(d.sub(a).mul(0.1f));
+		System.out.println(d);
+		
+		Point3 e = new Point3(6, 2, 1);
+		assert a.dot(b, c).equals(e);
+		System.out.println(e);
+		
+		e = new Point3(0, 0, 6);
+		assert a.cross(b, c).equals(e);
+		System.out.println(e);
 	}
 }

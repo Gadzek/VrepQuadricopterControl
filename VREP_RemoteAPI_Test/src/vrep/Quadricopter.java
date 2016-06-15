@@ -216,6 +216,9 @@ public class Quadricopter implements Runnable
 		case quad_path_hermite:
 			pathAddHermiteInterpolation(knots, hermiteBias, hermiteTension);
 			break;
+		case quad_path_bezier:
+			pathAddBezierPath(knots);
+			break;
 		default:
 			System.out.println("Incorrect algorithm integer. Using linear interpolation...");
 			for(Point3 knot : knots)
@@ -351,13 +354,13 @@ public class Quadricopter implements Runnable
 				nextKnot2 = nextKnot.add(nextKnot.sub(thisKnot));
 			else
 				nextKnot2 = knots.get(i+2);
-			
+			/*
 			float distance = thisKnot.distance(nextKnot);
 			FloatW dt = new FloatW(0);
 			vrep.simxGetFloatingParameter(clientID, remoteApi.sim_floatparam_simulation_time_step, dt, remoteApi.simx_opmode_oneshot_wait);
 			float ds = velocity*dt.getValue()/distance;
-			
-			for(float mu=0f; mu<1; mu+=ds)
+			*/
+			for(float mu=0f; mu<1; mu+=0.01)
 			{
 				Point3 p = thisKnot.hermiteInt(prevKnot, nextKnot, nextKnot2, mu, bias, tension);
 				FloatWA next = new FloatWA(p.toFloatArray());
@@ -392,6 +395,90 @@ public class Quadricopter implements Runnable
 			FloatWA next = new FloatWA(p.toFloatArray());
 		    path.add(next);
 		}
+	}
+	
+	public void pathAddBezierPath(List<Point3> knots)
+	{
+
+		
+		if(knots == null || knots.isEmpty())
+		{
+			System.out.println("Not enough knots for interpolation!");
+			return;
+		}
+		
+		Point3 startPos;
+		if (path.isEmpty())
+			startPos = position;
+		else
+			startPos = new Point3(path.getLast().getArray());
+		
+		if (!startPos.equals(knots.get(0), 0.01))
+			knots.add(0, startPos);
+		
+		for (int i=0; i<knots.size()-1; i++)
+		{
+			Point3 thisKnot = knots.get(i);
+			Point3 nextKnot = knots.get(i+1);
+			
+			Point3 bezier1;
+			Point3 bezier2;
+			
+			Point3 normal = null;
+			Point3 normal2 = null;
+			
+			if(i == 0)
+			{
+				bezier1 = thisKnot.add(nextKnot.sub(thisKnot).mul(0.3));
+			}
+			else
+			{
+				Point3 prevKnot = knots.get(i-1);
+				normal = thisKnot.bisect(prevKnot, nextKnot);
+				Point3 cross = thisKnot.cross(prevKnot, nextKnot);
+				bezier1 = thisKnot.cross(normal, cross);
+				
+				float bezierLength = thisKnot.distance(bezier1);
+				float segmentLength = thisKnot.distance(nextKnot);
+				if (bezierLength > segmentLength/2)
+					bezierLength = segmentLength/(2*bezierLength);
+				
+				bezier1 = thisKnot.add(thisKnot.sub(bezier1).mul(bezierLength));
+			}
+			
+			if(i == knots.size()-2)
+			{
+				bezier2 = nextKnot.add(thisKnot.sub(nextKnot).mul(0.3));
+			}
+			else
+			{
+				Point3 nextKnot2 = knots.get(i+2);
+				normal2 = nextKnot.bisect(thisKnot, nextKnot2);
+				Point3 cross2 = nextKnot.cross(thisKnot, nextKnot2);
+				bezier2 = nextKnot.cross(cross2, normal2);
+				
+				float bezierLength = nextKnot.distance(bezier2);
+				float segmentLength = nextKnot.distance(nextKnot2);
+				if (bezierLength > segmentLength/2)
+					bezierLength = segmentLength/(2*bezierLength);
+				
+				bezier2 = nextKnot.add(nextKnot.sub(bezier2).mul(bezierLength));
+			}
+			
+			List<Point3> bezierPoints = new LinkedList<>();
+			bezierPoints.add(bezier1);
+			bezierPoints.add(bezier2);
+			System.out.println(normal + " | " + normal2 + " || " + bezier1 + " | " + bezier2);
+			
+			for(float mu=0f; mu<1; mu+=0.01)
+			{
+				Point3 p = thisKnot.bezierCurve(nextKnot, bezierPoints, mu);
+				FloatWA next = new FloatWA(p.toFloatArray());
+			    path.add(next);
+			}
+
+		}
+		
 	}
 	
 	public void wait(float ms)
