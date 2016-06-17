@@ -1,9 +1,10 @@
 package vrep;
+
 import coppelia.remoteApi;
 
 public class Vrep {
 
-	public boolean scene;
+	//public boolean scene;
 	public int clientID;
 	public remoteApi api;
 	
@@ -18,7 +19,7 @@ public class Vrep {
 	      api.simxFinish(-1); // just in case, close all opened connections
 	      clientID = api.simxStart(IP,19997,true,true,5000,5);
 	      //loadScene();
-	      scene = false; //Scene not loaded
+	      //scene = false; //Scene not loaded
 	      //api.simxStartSimulation(clientID, remoteApi.simx_opmode_oneshot);
 	      
 	      if(clientID==-1)

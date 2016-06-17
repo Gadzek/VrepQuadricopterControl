@@ -42,14 +42,14 @@ public class Quadricopter implements Runnable
 		executeCommands();
 	}
 	
-	protected Quadricopter(int cid, remoteApi api)
+	protected Quadricopter(int clientID, remoteApi api)
 	{
-		this(cid, api, "Quadricopter");
+		this(clientID, api, "Quadricopter");
 	}
 	
-	protected Quadricopter(int cid, remoteApi api, String quadName)
+	protected Quadricopter(int clientID, remoteApi api, String quadName)
 	{
-		this.clientID = cid;
+		this.clientID = clientID;
 		this.vrep = api;
 		
 		//TODO: Make Quadricopter search and loadedQuadricopters list in Vrep class rather than Quadricopter
@@ -94,20 +94,12 @@ public class Quadricopter implements Runnable
 	public Point3 getTargetPosition()
 	{
 		positionOfTarget = getObjectPosition(targetHandle);
-		return position;
+		return positionOfTarget;
 	}
 	
 	public remoteApi getAPI()
 	{
 		return vrep;
-	}
-	
-	private void getObjectPosition(int handle, FloatWA out)
-	{
-        while(vrep.simxGetObjectPosition(clientID, handle, -1, out, remoteApi.simx_opmode_streaming) != remoteApi.simx_return_ok)
-        {
-       	 //waiting for data
-        }
 	}
 	
 	private Point3 getObjectPosition(int handle)

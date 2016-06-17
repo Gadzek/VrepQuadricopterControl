@@ -13,7 +13,7 @@ public class VrepTest {
 	public static void ConstructorsTest()
 	{
 		Vrep vrep = new Vrep();
-		assert vrep.scene == false;
+		//assert vrep.scene == false;
 		assert vrep.clientID != -1;
 		System.out.println(vrep.clientID);
 		
