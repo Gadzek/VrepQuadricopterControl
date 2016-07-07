@@ -1,9 +1,13 @@
 import java.util.LinkedList;
 import java.util.List;
 
-import helper.Point3;
+import vrep.BezierMultiple;
+import vrep.Cosine;
+import vrep.Linear;
+import vrep.Point3;
 import vrep.Quadricopter;
 import vrep.Vrep;
+import vrep.VrepErrorHandler;
 
 public class droneMoveTest {
 	
@@ -13,13 +17,13 @@ public class droneMoveTest {
 		 System.out.println("Program started");
 		  
 		 Vrep vrep = new Vrep();
+		 System.out.println("quad1");
 		 Quadricopter quad1 = vrep.getQuadricopter("Quadricopter");
-		 //Quadricopter quad2 = vrep.getQuadricopter("Quadricopter#0");
-	     
-		 vrep.startSimulation();
+		 System.out.println("quad2");
+		 Quadricopter quad2 = vrep.getQuadricopter("Quadricopter#0");
+
 		 //quad.printPosition();
 		 //System.out.println(quad.getPosition());
-		 Thread t1 = new Thread(quad1);
 		 //Thread t2 = new Thread(quad2);
 		 //quad1.moveTo(0f, 1f, 0.5f, Quadricopter.quad_path_linear);
 		 //quad1.moveTo(0f, 1f, 2f, Quadricopter.quad_path_linear);
@@ -48,16 +52,17 @@ public class droneMoveTest {
 		 //Point3 c = new Point3(-1,-1,1);
 		 //Point3 d = a.cross(b, c);
 		 //System.out.println(d);
-		 quad1.addPath(path, Quadricopter.quad_path_hermite, 0.5f, 0.2f);
-		 
-		 //quad2.moveTo(-2f, -1f, 1f, 0.5f);
-		 t1.start();
-		 //t2.start();
-		 
-		 t1.join();
-		 //t2.join();
-	     
-	     vrep.disconnect();
+		 quad1.moveThrough(path, new BezierMultiple(quad1));
+		 //quad2.moveTo(new Point3(3f, 3f, 3f), Quadricopter.quad_path_bezier, bezier);
+		 quad2.moveTo(new Point3(3f, 3f, 3f), new Cosine(quad2));
+		 vrep.startSimulation();
+		 //Thread.sleep(2000);
+		 //vrep.pauseSimulation();
+		 //Thread.sleep(2000);
+		 //vrep.startSimulation();
+		 Thread.sleep(3000);
+		 vrep.stopSimulation(true);
+	     //vrep.disconnect();
          
 	     System.out.println("Program ended");
 	}

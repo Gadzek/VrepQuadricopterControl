@@ -19,7 +19,6 @@ public class QuadricopterTest {
 		System.out.println("2");
 		Quadricopter quad2 = vrep.getQuadricopter("Quadricopter#0");
 
-		assert Quadricopter.loadedQuadricopters.size() == 2;
 		System.out.println(quad1.getPosition());
 		System.out.println(quad2.getPosition());
 		quad1.moveTo(0f, 0f, 1);

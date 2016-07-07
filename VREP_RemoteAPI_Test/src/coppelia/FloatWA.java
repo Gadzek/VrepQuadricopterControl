@@ -2,7 +2,7 @@
 
 package coppelia;
 
-import helper.Point3;
+import vrep.Point3;
 
 public class FloatWA
 {

@@ -1,7 +1,7 @@
 package test;
 import java.util.Arrays;
 
-import helper.Point3;
+import vrep.Point3;
 
 public class Point3Test 
 {
