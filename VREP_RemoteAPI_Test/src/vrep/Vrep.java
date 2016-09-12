@@ -124,4 +124,14 @@ public class Vrep {
 		api.simxFinish(clientID);
 		System.out.println("Disconnected from remote API server");
 	}
+	
+	public remoteApi getAPI()
+	{
+		return api;
+	}
+	
+	public GlobalSignalListener getGlobalSignalListener()
+	{
+		return globalSignalListener;
+	}
 }

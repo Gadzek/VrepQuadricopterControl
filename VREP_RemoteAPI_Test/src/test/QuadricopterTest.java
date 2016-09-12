@@ -21,8 +21,8 @@ public class QuadricopterTest {
 
 		System.out.println(quad1.getPosition());
 		System.out.println(quad2.getPosition());
-		quad1.moveTo(0f, 0f, 1);
-		quad2.moveTo(2f, 4f, 2f);
+		//quad1.moveTo(0f, 0f, 1);
+		//quad2.moveTo(2f, 4f, 2f);
 	}
 
 }

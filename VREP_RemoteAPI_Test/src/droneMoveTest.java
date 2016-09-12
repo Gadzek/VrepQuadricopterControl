@@ -3,7 +3,11 @@ import java.util.List;
 
 import vrep.BezierMultiple;
 import vrep.Cosine;
+import vrep.CosineMultiple;
+import vrep.CubicMultiple;
+import vrep.HermiteMultiple;
 import vrep.Linear;
+import vrep.LinearMultiple;
 import vrep.Point3;
 import vrep.Quadricopter;
 import vrep.Vrep;
@@ -17,10 +21,8 @@ public class droneMoveTest {
 		 System.out.println("Program started");
 		  
 		 Vrep vrep = new Vrep();
-		 System.out.println("quad1");
 		 Quadricopter quad1 = vrep.getQuadricopter("Quadricopter");
-		 System.out.println("quad2");
-		 Quadricopter quad2 = vrep.getQuadricopter("Quadricopter#0");
+		 //Quadricopter quad2 = vrep.getQuadricopter("Quadricopter#0");
 
 		 //quad.printPosition();
 		 //System.out.println(quad.getPosition());
@@ -33,13 +35,9 @@ public class droneMoveTest {
 		 List<Point3> path = new LinkedList<>();
 		 path.add(new Point3(0, 0, 1));
 		 path.add(new Point3(1f, 2f, 1f));
-		 path.add(new Point3(2f, 1f, 1f));
-		 path.add(new Point3(3f, -1f, 1f));
-		 path.add(new Point3(4f, 0f, 1f));
-		 path.add(new Point3(5f, 2f, 1f));
-		 path.add(new Point3(0f, -1f, 1f));
-		 path.add(new Point3(2f, -2f, 3f));
-		 //path.add(new Point3(0f, 0f, 1f));
+		 path.add(new Point3(2f, 1f, 2f));
+		 path.add(new Point3(3f, -1f, 2f));
+		 path.add(new Point3(4f, 0f, 3f));
 		 
 		 List<Point3> bezier = new LinkedList<>();
 		 bezier.add(new Point3(0.5f, 1f, 1f));
@@ -54,13 +52,13 @@ public class droneMoveTest {
 		 //System.out.println(d);
 		 quad1.moveThrough(path, new BezierMultiple(quad1));
 		 //quad2.moveTo(new Point3(3f, 3f, 3f), Quadricopter.quad_path_bezier, bezier);
-		 quad2.moveTo(new Point3(3f, 3f, 3f), new Cosine(quad2));
+		 //quad2.moveTo(new Point3(3f, 3f, 3f), new Cosine(quad2));
 		 vrep.startSimulation();
 		 //Thread.sleep(2000);
 		 //vrep.pauseSimulation();
 		 //Thread.sleep(2000);
 		 //vrep.startSimulation();
-		 Thread.sleep(3000);
+		 Thread.sleep(25000);
 		 vrep.stopSimulation(true);
 	     //vrep.disconnect();
          

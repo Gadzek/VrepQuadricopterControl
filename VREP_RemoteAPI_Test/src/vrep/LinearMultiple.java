@@ -21,7 +21,20 @@ public class LinearMultiple implements MoveThorughPointsAlgorithm {
 		
 		for(Point3 knot : knots)
 		{
-			path.addAll(lerp.moveTo(knot));
+			//path.addAll(lerp.moveTo(knot));
+			Point3 startPos;
+			if (path.isEmpty())
+				startPos = parent.getPosition();
+			else
+				startPos = new Point3(path.getLast().getArray());
+			//System.out.println(startPos);
+			
+			for(float mu=0f; mu<1; mu+=0.01)
+			{
+				Point3 p = startPos.lerp(knot, mu);
+				FloatWA next = new FloatWA(p.toFloatArray());
+			    path.add(next);
+			}
 		}
 		return path;
 	}

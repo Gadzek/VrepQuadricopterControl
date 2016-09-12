@@ -23,7 +23,18 @@ public class CosineMultiple implements MoveThorughPointsAlgorithm
 		
 		for(Point3 knot : knots)
 		{
-			path.addAll(cos.moveTo(knot));
+			Point3 startPos;
+			if (path.isEmpty())
+				startPos = parent.getPosition();
+			else
+				startPos = new Point3(path.getLast().getArray());
+			
+			for(float mu=0f; mu<1; mu+=0.01)
+			{
+				Point3 p = startPos.cosInt(knot, mu);
+				FloatWA next = new FloatWA(p.toFloatArray());
+			    path.add(next);
+			}
 		}
 		return path;
 	}

@@ -184,7 +184,7 @@ public class Quadricopter
 	}
 	*/
 	
-	protected DroneCommands getDroneCommands()
+	public DroneCommands getDroneCommands()
 	{
 		return commands;
 	}
@@ -194,6 +194,7 @@ public class Quadricopter
 		commands.moveTo(target, a);
 	}
 	
+	/*
 	public void moveTo(float x, float y, float z)
 	{
 		moveTo(new Point3(x,y,z));
@@ -238,6 +239,7 @@ public class Quadricopter
 	{
 		commands.addPath(knots, algorithm, hermiteBias, hermiteTension);
 	}
+	*/
 	
 	public void moveThrough(List<Point3> knots, MoveThorughPointsAlgorithm a)
 	{
